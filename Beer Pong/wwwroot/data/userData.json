@@ -1,0 +1,21 @@
+[
+  {
+    "games": 5,
+    "userId": 0,
+    "username": "Joern",
+    "wins": 0
+  },
+  {
+    "games": 3,
+    "userId": 1,
+    "username": "Tammo",
+    "wins": 2
+  },
+  {
+    "games": 8,
+    "userId": 2,
+    "username": "Noel",
+    "wins": 6
+  }
+
+]
