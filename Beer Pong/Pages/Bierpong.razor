@@ -1,0 +1,107 @@
+﻿@page "/bierpong"
+@inject HttpClient Http
+
+<h1>Bier Pong</h1>
+
+<p>This component demonstrates fetching data from the server.</p>
+
+@if (userList == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+<table class="table">
+    <thead>
+        <tr>
+            <th>UserId</th>
+            <th>Username</th>
+            <th>Wins</th>
+            <th>Games</th>
+            <th>K/D</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in userList)
+        {
+            actualUser = user;
+            if (true)
+            {
+                <tr>
+                    <td>@user.UserId.ToString()</td>
+                    <td>@user.UserName.ToString()</td>
+                    <td>@user.Wins.ToString()</td>
+                    <td>@user.Games.ToString()</td>
+                    <td>@Math.Round(((double)@user.Wins / (double)@user.Games), 2)</td>
+                    <td><button @onclick="IncreaseWins">+</button></td>
+                    
+                </tr>
+
+            }
+            else
+            {
+                <tr>
+                    <td>@user.UserId.ToString()</td>
+                    <td>@user.UserName.ToString()</td>
+                    <td>@user.Wins.ToString()</td>
+                    <td>@user.Games.ToString()</td>
+                    <td>@Math.Round(((double)@user.Wins / (double)@user.Games), 2)</td>
+                </tr>
+            }
+        }
+        <tr>
+            <td><button @onclick="AddUser">Add User</button></td>
+            <td><input @bind="newUser" placeholder="UserName" /></td>
+        </tr>
+    </tbody>
+    </table>
+}
+
+@code {
+    private static List<UserData> userList;
+    private string newUser;
+    private UserData actualUser;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await SetUserList();
+    }
+
+    public async Task SetUserList()
+    {
+        userList = await Http.GetFromJsonAsync<List<UserData>>("data/userData.json");
+    }
+
+    public async Task SaveUserList(UserData user)
+    {
+        await Http.PostAsJsonAsync("data/userData.json", JsonSerializer.Serialize(user));
+    }
+
+    async void SaveToJson(UserData user)
+    {
+        await SaveUserList(user);
+    }
+
+    void IncreaseWins()
+    {
+
+    }
+
+    void AddUser()
+    {
+        string userName = newUser;
+        if (userName is string || userName == "")
+            return;
+        UserData user = new UserData(userName, userList[userList.Count - 1].UserId);
+        userList.Add(user);
+        SaveToJson(user);
+
+    }
+
+    public static int GetMaxId()
+    {
+        return userList[userList.Count - 1].UserId;
+    }
+
+}
